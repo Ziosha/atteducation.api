@@ -13,6 +13,12 @@ namespace atteducation.api.Data
         public DbSet<User> Users { get; set;}
         public DbSet<Rol> Rols { get; set; }
         public DbSet<UserRols> UserRols { get; set;}
+        //porfavorfunca
+        public DbSet<Coment> Coments { get; set; }
+        public DbSet<Content> Contents { get; set; }
+        public DbSet<Theme> Themes { get; set; }
+        public DbSet<ComentContent> ComentContents { get; set; }
+        public DbSet<UserContent> UserContents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

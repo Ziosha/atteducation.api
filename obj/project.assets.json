@@ -2777,24 +2777,31 @@
     ]
   },
   "packageFolders": {
-    "/home/ahsoiz/.nuget/packages/": {}
+    "C:\\Users\\eric\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/ahsoiz/Documentos/dotnet/Att/atteducation.api/atteducation.api.csproj",
+      "projectUniqueName": "C:\\Users\\eric\\source\\repos\\cositas\\atteducation.api\\atteducation.api.csproj",
       "projectName": "atteducation.api",
-      "projectPath": "/home/ahsoiz/Documentos/dotnet/Att/atteducation.api/atteducation.api.csproj",
-      "packagesPath": "/home/ahsoiz/.nuget/packages/",
-      "outputPath": "/home/ahsoiz/Documentos/dotnet/Att/atteducation.api/obj/",
+      "projectPath": "C:\\Users\\eric\\source\\repos\\cositas\\atteducation.api\\atteducation.api.csproj",
+      "packagesPath": "C:\\Users\\eric\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\eric\\source\\repos\\cositas\\atteducation.api\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/ahsoiz/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\eric\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2869,7 +2876,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.408/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }
