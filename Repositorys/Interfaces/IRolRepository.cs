@@ -6,4 +6,5 @@ namespace atteducation.api.Repositorys.Interfaces
     {
          Task<List<Rol>> GetRols();
     }
+    
 }
