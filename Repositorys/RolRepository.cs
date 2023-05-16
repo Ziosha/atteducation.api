@@ -9,6 +9,10 @@ namespace atteducation.api.Repositorys
     {
         private readonly DataContext _context;
 
+        public RolRepository(DataContext context)
+        {
+            _context = context;
+        }
         public async Task<List<Rol>> GetRols()
         {
             var rols = await _context.Rols.ToListAsync();
