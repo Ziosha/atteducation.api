@@ -1,234 +1,245 @@
-// using atteducation.api.Repositorys.Interfaces;
 
-// namespace atteducation.api.Repositorys
-// {
-//     public class AuthRepository: IAuthRepository
-//     {
-//         private readonly DataContext _context;
-//         private readonly IConfiguration _config;
-//         private readonly IMapper _mapper;
-//         private readonly SymmetricSecurityKey _key;
-//         public AuthRepository(DataContext context, IConfiguration config, IMapper mapper)
-//         {
-//             _context = context;
-//             _config = config;
-//             _mapper = mapper;
-//             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Appsettings:Token"]));
-//         }
-//         public async Task<User> Login(string usernameOrEmail, string password)
-//         {
-//             usernameOrEmail = usernameOrEmail.Trim();
-//             password = password.Trim();
-//             var user = await _context.Users
-//                 .FirstOrDefaultAsync(x => (x.Username == usernameOrEmail || x.Email == usernameOrEmail));
 
-//             if (user == null)
-//                 return null;
+using atteducation.api.Data;
+using atteducation.api.Repositorys.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using AutoMapper;
+using System.Text;
+using atteducation.api.Models;
+using atteducation.Dtos;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
-//             if (!verifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-//                 return null;
+namespace atteducation.api.Repositorys
+{
+    public class AuthRepository: IAuthRepository
+    {
+        private readonly DataContext _context;
+        private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
+        private readonly SymmetricSecurityKey _key;
+        public AuthRepository(DataContext context, IConfiguration config, IMapper mapper)
+        {
+            _context = context;
+            _config = config;
+            _mapper = mapper;
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Appsettings:Token"]));
+        }
+        public async Task<User> Login(string usernameOrEmail, string password)
+        {
+            usernameOrEmail = usernameOrEmail.Trim();
+            password = password.Trim();
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => (x.Username == usernameOrEmail || x.Email == usernameOrEmail));
 
-//             return user;
-//         }
+            if (user == null)
+                return null;
 
-//         private bool verifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-//         {
-//             using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
-//             {
-//                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-//                 for (int i = 0; i < computedHash.Length; i++)
-//                 {
-//                     if (computedHash[i] != passwordHash[i]) return false;
-//                 }
-//                 return true;
-//             }
-//         }
+            if (!verifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                return null;
 
-//         public async Task<User> Register(UserForRegisterDto user)
-//         {
-//             using (var transaction = _context.Database.BeginTransaction())
-//             {
-//                 try
-//                 {
-//                     var password = user.Password.Trim();
+            return user;
+        }
 
-//                     var createdUser = _mapper.Map<User>(user);
+        private bool verifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != passwordHash[i]) return false;
+                }
+                return true;
+            }
+        }
 
-//                     byte[] passwordHash, passwordSalt;
-//                     CreatePasswordHash(password, out passwordHash, out passwordSalt);
-//                     createdUser.PasswordHash = passwordHash;
-//                     createdUser.PasswordSalt = passwordSalt;
+        public async Task<User> Register(UserForRegisterDto user)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var password = user.Password.Trim();
 
-//                     await _context.Users.AddAsync(createdUser);
-//                     await _context.SaveChangesAsync();
+                    var createdUser = _mapper.Map<User>(user);
 
-//                     transaction.Commit();
+                    byte[] passwordHash, passwordSalt;
+                    CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                    createdUser.PasswordHash = passwordHash;
+                    createdUser.PasswordSalt = passwordSalt;
 
-//                     return createdUser;
-//                 }
-//                 catch (Exception)
-//                 {
-//                     transaction.Rollback();
-//                     throw new Exception("registration_failed");
-//                 }
-//             }
-//         }
+                    await _context.Users.AddAsync(createdUser);
+                    await _context.SaveChangesAsync();
 
-//         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-//         {
-//             using (var hmac = new System.Security.Cryptography.HMACSHA512())
-//             {
-//                 passwordSalt = hmac.Key;
-//                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-//             }
-//         }
+                    transaction.Commit();
 
-//         public async Task<string> UsernameOrEmail(string usernameOrEmail)
-//         {
-//             usernameOrEmail = usernameOrEmail.Trim();
+                    return createdUser;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw new Exception("registration_failed");
+                }
+            }
+        }
 
-//             var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameOrEmail || x.Email == usernameOrEmail);
-//             if (user == null)
-//                 return "wrong_usernameOrEmail";
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
 
-//             return "";
-//         }
+        public async Task<string> UsernameOrEmail(string usernameOrEmail)
+        {
+            usernameOrEmail = usernameOrEmail.Trim();
 
-//         public async Task<string> UsernameOrEmailExist(UserForRegisterDto userForRegisterDto)
-//         {
-//             if (await _context.Users.AnyAsync(x => x.Username == userForRegisterDto.Username))
-//             {
-//                 return "username_exists";
-//             }
-//             if (await _context.Users.AnyAsync(x => x.Email == userForRegisterDto.Email))
-//             {
-//                 return "email_exists";
-//             }
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameOrEmail || x.Email == usernameOrEmail);
+            if (user == null)
+                return "wrong_usernameOrEmail";
 
-//             return "";
-//         }
+            return "";
+        }
 
-//         // public SecurityTokenDescriptor CreateToken(User userToReturn, List<Rol> rols)
-//         // {
-//         //    try
-//         //     {
-//         //         var claims = new[] {
-//         //             new Claim (ClaimTypes.NameIdentifier, userToReturn.Id.ToString()),
-//         //             new Claim (ClaimTypes.Name, userToReturn.Username)
-//         //         };
+        public async Task<string> UsernameOrEmailExist(UserForRegisterDto userForRegisterDto)
+        {
+            if (await _context.Users.AnyAsync(x => x.Username == userForRegisterDto.Username))
+            {
+                return "username_exists";
+            }
+            if (await _context.Users.AnyAsync(x => x.Email == userForRegisterDto.Email))
+            {
+                return "email_exists";
+            }
 
-//         //         foreach (var rol in rols)
-//         //         {
-//         //             claims = claims.Concat(
-//         //                 new[] {
-//         //                     new Claim(ClaimTypes.Role, rol.Name)
-//         //                 }).ToArray();
-//         //         }
+            return "";
+        }
 
-//         //         var key = new SymmetricSecurityKey(Encoding.UTF8
-//         //             .GetBytes(_config.GetSection("AppSettings:Token").Value));
+        // public SecurityTokenDescriptor CreateToken(User userToReturn, List<Rol> rols)
+        // {
+        //    try
+        //     {
+        //         var claims = new[] {
+        //             new Claim (ClaimTypes.NameIdentifier, userToReturn.Id.ToString()),
+        //             new Claim (ClaimTypes.Name, userToReturn.Username)
+        //         };
 
-//         //         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        //         foreach (var rol in rols)
+        //         {
+        //             claims = claims.Concat(
+        //                 new[] {
+        //                     new Claim(ClaimTypes.Role, rol.Name)
+        //                 }).ToArray();
+        //         }
 
-//         //         var tokenDescriptor = new SecurityTokenDescriptor
-//         //         {
-//         //             Subject = new ClaimsIdentity(claims),
-//         //             Expires = DateTime.Now.AddDays(1),
-//         //             SigningCredentials = creds
-//         //         };
+        //         var key = new SymmetricSecurityKey(Encoding.UTF8
+        //             .GetBytes(_config.GetSection("AppSettings:Token").Value));
 
-//         //         var tokenHandler = new JwtSecurityTokenHandler();
+        //         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-//         //         var token = tokenHandler.CreateToken(tokenDescriptor);
-//         //         return tokenDescriptor;
-//         //     }
-//         //     catch (Exception)
-//         //     {
-//         //         return null;
-//         //     }
-//         // }
+        //         var tokenDescriptor = new SecurityTokenDescriptor
+        //         {
+        //             Subject = new ClaimsIdentity(claims),
+        //             Expires = DateTime.Now.AddDays(1),
+        //             SigningCredentials = creds
+        //         };
 
-//         public string CreateTokens(User user, List<Rol> rols)
-//         {
-//             var claims = new List<Claim>
-//             {
-//                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString())
-//             };
+        //         var tokenHandler = new JwtSecurityTokenHandler();
 
-//             foreach(var role in rols)
-//             {
-//                  claims.Add(new Claim(ClaimTypes.Role, role.Name));
-//             }
+        //         var token = tokenHandler.CreateToken(tokenDescriptor);
+        //         return tokenDescriptor;
+        //     }
+        //     catch (Exception)
+        //     {
+        //         return null;
+        //     }
+        // }
 
-//             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+        public string CreateTokens(User user, List<Rol> rols)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString())
+            };
 
-//             var tokenDescriptor = new SecurityTokenDescriptor
-//             {
-//                 Subject = new ClaimsIdentity(claims),
-//                 Expires = DateTime.Now.AddDays(7),
-//                 SigningCredentials = creds,
+            foreach(var role in rols)
+            {
+                 claims.Add(new Claim(ClaimTypes.Role, role.Namerol));
+            }
+
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(7),
+                SigningCredentials = creds,
                 
-//             };
+            };
 
-//             var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-//             var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-//             return tokenHandler.WriteToken(token);
-//         }
+            return tokenHandler.WriteToken(token);
+        }
 
-//         public async Task<DataForAuthenticationDto> AuthenticationData(int userId)
-//         {
-//             var userFromRepo = await GetUser(userId);
-//             var userReturn = _mapper.Map<UserForDetailedDto>(userFromRepo);
+        public async Task<DataForAuthenticationDto> AuthenticationData(int userId)
+        {
+            var userFromRepo = await GetUser(userId);
+            var userReturn = _mapper.Map<UserForDetailedDto>(userFromRepo);
             
-//             var rols = await GetRolsPerUser(userId);
-//             var rolsAssignedToList = _mapper.Map<List<RolsToListDto>>(rols);
+            var rols = await GetRolsPerUser(userId);
+            var rolsAssignedToList = _mapper.Map<List<RolsToListDto>>(rols);
     
-//             var tokenDescriptor = CreateTokens(userFromRepo, rols);
+            var tokenDescriptor = CreateTokens(userFromRepo, rols);
             
             
 
-//             var dataForAuthenticationDto = new DataForAuthenticationDto()
-//             {
-//                 Token = tokenDescriptor,
-//                 Personal = userReturn,
-//                 Rols = rolsAssignedToList
-//             };
+            var dataForAuthenticationDto = new DataForAuthenticationDto()
+            {
+                Token = tokenDescriptor,
+                Personal = userReturn,
+                Rols = rolsAssignedToList
+            };
 
-//             return dataForAuthenticationDto;
-//         }
+            return dataForAuthenticationDto;
+        }
 
-//         public async Task<User> GetUser(int personalId)
-//         {
-//             var user = await _context.Users
-//             .FirstOrDefaultAsync(x => x.Id == personalId);
+        public async Task<User> GetUser(int personalId)
+        {
+            var user = await _context.Users
+            .FirstOrDefaultAsync(x => x.Id == personalId);
 
-//             return user;
-//         }
+            return user;
+        }
 
-//         public async Task<List<Rol>> GetRolsPerUser(int personalId)
-//         {
-//             var rols = await _context.RolUsers.Where(r => r.UserId == personalId).Select(x => x.Rol).ToListAsync();
-//             return rols;
-//         }
+        public async Task<List<Rol>> GetRolsPerUser(int personalId)
+        {
+            var rols = await _context.UserRols.Where(r => r.UserId == personalId).Select(x => x.Rol).ToListAsync();
+            return rols;
+        }
 
-//          public async Task<Rol> AssignRol(int userId, int rolId)
-//         {
-//             var rol = await _context.Rols.FirstOrDefaultAsync(r => r.Id == rolId);
-//             if (rol != null)
-//             {
-//                 var userRol = new RolUser()
-//                 {
-//                     RolId = rol.Id,
-//                     UserId = userId
-//                 };
+         public async Task<Rol> AssignRol(int userId, int rolId)
+        {
+            var rol = await _context.Rols.FirstOrDefaultAsync(r => r.Id == rolId);
+            if (rol != null)
+            {
+                var userRol = new UserRols()
+                {
+                    RolId = rol.Id,
+                    UserId = userId
+                };
 
-//                 await _context.RolUsers.AddAsync(userRol);
-//                 await _context.SaveChangesAsync();
-//             }
+                await _context.UserRols.AddAsync(userRol);
+                await _context.SaveChangesAsync();
+            }
 
-//             return rol;
-//         }
-//     }
-// }
+            return rol;
+        }
+    }
+}

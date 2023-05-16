@@ -10,9 +10,9 @@ namespace atteducation.api.Data
 
         }
 
-        DbSet<User> Users { get; set;}
-        DbSet<Rol> Rols { get; set; }
-        DbSet<UserRols> UserRols { get; set;}
+        public DbSet<User> Users { get; set;}
+        public DbSet<Rol> Rols { get; set; }
+        public DbSet<UserRols> UserRols { get; set;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

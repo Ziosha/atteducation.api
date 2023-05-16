@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "XCdLqv0TpQJe5hudWBtXlO/+iXbLNKaJVvg4XVagBi2l8TQe+ygehfpMobLJtxzx9A+14XgjU8pKcxTSyBhXUg==",
+  "dgSpecHash": "8DkwPmnEsIm3qEcbzsDTax05e31ZqMCmCsRycnt0IW3RdyHxbGzUeIlVCgmXEMdZwg/3lLyLgxPk4/7d9po1Fw==",
   "success": true,
   "projectFilePath": "/home/ahsoiz/Documentos/dotnet/Att/atteducation.api/atteducation.api.csproj",
   "expectedPackageFiles": [
+    "/home/ahsoiz/.nuget/packages/automapper/12.0.0/automapper.12.0.0.nupkg.sha512",
+    "/home/ahsoiz/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.0/automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
     "/home/ahsoiz/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",
     "/home/ahsoiz/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/6.0.14/microsoft.aspnetcore.authentication.jwtbearer.6.0.14.nupkg.sha512",
     "/home/ahsoiz/.nuget/packages/microsoft.aspnetcore.jsonpatch/6.0.14/microsoft.aspnetcore.jsonpatch.6.0.14.nupkg.sha512",

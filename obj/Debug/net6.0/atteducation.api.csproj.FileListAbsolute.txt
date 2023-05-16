@@ -65,3 +65,5 @@
 /home/ahsoiz/Documentos/dotnet/Att/atteducation.api/obj/Debug/net6.0/atteducation.api.pdb
 /home/ahsoiz/Documentos/dotnet/Att/atteducation.api/obj/Debug/net6.0/atteducation.api.genruntimeconfig.cache
 /home/ahsoiz/Documentos/dotnet/Att/atteducation.api/obj/Debug/net6.0/ref/atteducation.api.dll
+/home/ahsoiz/Documentos/dotnet/Att/atteducation.api/bin/Debug/net6.0/AutoMapper.dll
+/home/ahsoiz/Documentos/dotnet/Att/atteducation.api/bin/Debug/net6.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
