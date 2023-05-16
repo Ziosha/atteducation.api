@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "q4igsuBPpaa7+978hwHkuM3HB2MlV9BlsHyljzdKtj0=",
+  "Source": "atteducation.api",
+  "BasePath": "_content/atteducation.api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
