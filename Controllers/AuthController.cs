@@ -35,19 +35,15 @@ namespace atteducation.api.Controllers
             {
                 userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
-                string alreadyExists = await _repo.UsernameOrEmailExist(userForRegisterDto);
-                if (alreadyExists != "")
-                {
-                    if (alreadyExists == "username_exists")
-                    {
-                        return BadRequest("El usuario '" + userForRegisterDto.Username + "' ya existe");
-                    }
-                    return BadRequest("El correo electrónico '" + userForRegisterDto.Email + "' ya existe");
-                }
-
-                userForRegisterDto.CreationUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                userForRegisterDto.UpdateUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
+                // string alreadyExists = await _repo.UsernameOrEmailExist(userForRegisterDto);
+                // if (alreadyExists != "")
+                // {
+                //     if (alreadyExists == "username_exists")
+                //     {
+                //         return BadRequest("El usuario '" + userForRegisterDto.Username + "' ya existe");
+                //     }
+                //     return BadRequest("El correo electrónico '" + userForRegisterDto.Email + "' ya existe");
+                // }
                 var createdUser = await _repo.Register(userForRegisterDto);
                 var userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);
 
