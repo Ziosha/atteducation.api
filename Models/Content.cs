@@ -11,7 +11,7 @@ namespace atteducation.api.Models
         public string Type { get; set; }
         public string Url { get; set; }
         public string Ranking { get; set; }
-        public Theme Theme { get; set; }
+        public ICollection<Theme> Themes { get; set; }
         public ICollection<ComentContent> ComentContent { get; set; }
     }
 }

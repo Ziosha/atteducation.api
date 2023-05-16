@@ -10,6 +10,7 @@ namespace atteducation.api.Models
         public string Name { get; set; }
         public string LastName { get; set; }
         public ICollection<UserRols> UserRols { get; set;}
+        public ICollection<Theme> Themes { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime DeleteDate { get; set; }
         public DateTime UpdateDate { get; set; }

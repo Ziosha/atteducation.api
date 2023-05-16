@@ -9,7 +9,9 @@ namespace atteducation.api.Models
     {
         public int Id { get; set; }
         public string ThemeName { get; set; } 
-        public string Description { get; set; }   
-        public ICollection<Content> Contents { get; set; }
+        public string Description { get; set; }
+        public virtual Content Content { get; set; }
+        public int ContentId { get; set; }
+        
     }
 }

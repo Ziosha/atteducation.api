@@ -9,7 +9,8 @@ namespace atteducation.api.Models
     {
         public int Id { get; set; }
         public string Coments { get; set; }
+        public int UserReference { get; set; }
         public DateTime CreationDate { get; set; }
-        public ICollection<ComentContent> ComentContent { get; set; }    
+        public ICollection<ComentContent> ComentContents { get; set; }    
     }
 }

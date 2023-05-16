@@ -12,8 +12,8 @@ using atteducation.api.Data;
 namespace atteducation.api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230516161602_siteframe")]
-    partial class siteframe
+    [Migration("20230516191204_ModelsMIgrations")]
+    partial class ModelsMIgrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,11 +33,13 @@ namespace atteducation.api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Coments")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("UserReference")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -76,23 +78,15 @@ namespace atteducation.api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Ranking")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ThemeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ThemeId");
 
                     b.ToTable("Contents");
                 });
@@ -106,7 +100,6 @@ namespace atteducation.api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Namerol")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -122,15 +115,23 @@ namespace atteducation.api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("ContentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ThemeName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ContentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Themes");
                 });
@@ -150,30 +151,24 @@ namespace atteducation.api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -230,7 +225,7 @@ namespace atteducation.api.Migrations
             modelBuilder.Entity("atteducation.api.Models.ComentContent", b =>
                 {
                     b.HasOne("atteducation.api.Models.Coment", "Coment")
-                        .WithMany("ComentContent")
+                        .WithMany("ComentContents")
                         .HasForeignKey("ComentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -246,15 +241,19 @@ namespace atteducation.api.Migrations
                     b.Navigation("Content");
                 });
 
-            modelBuilder.Entity("atteducation.api.Models.Content", b =>
+            modelBuilder.Entity("atteducation.api.Models.Theme", b =>
                 {
-                    b.HasOne("atteducation.api.Models.Theme", "Theme")
-                        .WithMany("Contents")
-                        .HasForeignKey("ThemeId")
+                    b.HasOne("atteducation.api.Models.Content", "Content")
+                        .WithMany("Themes")
+                        .HasForeignKey("ContentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Theme");
+                    b.HasOne("atteducation.api.Models.User", null)
+                        .WithMany("Themes")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Content");
                 });
 
             modelBuilder.Entity("atteducation.api.Models.UserContent", b =>
@@ -297,12 +296,14 @@ namespace atteducation.api.Migrations
 
             modelBuilder.Entity("atteducation.api.Models.Coment", b =>
                 {
-                    b.Navigation("ComentContent");
+                    b.Navigation("ComentContents");
                 });
 
             modelBuilder.Entity("atteducation.api.Models.Content", b =>
                 {
                     b.Navigation("ComentContent");
+
+                    b.Navigation("Themes");
                 });
 
             modelBuilder.Entity("atteducation.api.Models.Rol", b =>
@@ -310,13 +311,10 @@ namespace atteducation.api.Migrations
                     b.Navigation("UserRols");
                 });
 
-            modelBuilder.Entity("atteducation.api.Models.Theme", b =>
-                {
-                    b.Navigation("Contents");
-                });
-
             modelBuilder.Entity("atteducation.api.Models.User", b =>
                 {
+                    b.Navigation("Themes");
+
                     b.Navigation("UserRols");
                 });
 #pragma warning restore 612, 618
