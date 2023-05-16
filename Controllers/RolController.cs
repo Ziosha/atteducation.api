@@ -7,10 +7,10 @@ namespace atteducation.api.Controllers
     [Route("api/[controller]")]
     public class RolController : ControllerBase
     {
-        private readonly IUserRepository _repo;
+        private readonly IRolRepository _repo;
         private readonly ILogger<RolController> _logger;
 
-        public RolController(IUserRepository repo, ILogger<RolController> logger)
+        public RolController(IRolRepository repo, ILogger<RolController> logger)
         {
             _logger = logger;
             _repo = repo;
@@ -21,7 +21,8 @@ namespace atteducation.api.Controllers
         {
             try
             {
-                return Ok("");
+                var rol = await _repo.GetRols();
+                return Ok(rol);
             }
             catch(Exception ex)
             {

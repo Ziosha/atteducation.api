@@ -74,4 +74,7 @@ app.Run();
 void LoadRepositorys(IServiceCollection service)
 {
     service.AddScoped<IAuthRepository, AuthRepository>();
+    service.AddScoped<IUserRepository, UserRepository>();
+    service.AddScoped<IRolRepository, RolRepository>();
+    service.AddScoped<IThemeRepository, ThemeRepository>();
 }
