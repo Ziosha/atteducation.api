@@ -4,4 +4,5 @@ namespace atteducation.api.Repositorys.Interfaces
     {
          
     }
+    
 }
