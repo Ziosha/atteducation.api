@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace atteducation.api.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ThemeController : ControllerBase
     {
         private readonly IThemeRepository _repo;

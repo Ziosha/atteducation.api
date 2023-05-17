@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace atteducation.api.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ContectController : ControllerBase
     {
         private readonly IContentRepository _repo;
