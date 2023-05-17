@@ -9,6 +9,7 @@ namespace atteducation.api.Dtos.ComentDto
     {
         public int Id { get; set; }
         public string Comentario { get; set; }
+        public int UserReference { get; set; }
         public DateTime Fecha { get; set; }
     }
 }

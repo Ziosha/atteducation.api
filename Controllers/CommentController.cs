@@ -15,7 +15,28 @@ namespace atteducation.api.Controllers
     {
         private readonly ICommentRepository _repo;
         private readonly ILogger _logger;
-        private readonly IMapper _mapper;
 
+        public CommentController(ICommentRepository repo, ILogger<CommentController> logger)
+        {
+            _repo = repo;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> getComments()
+        {
+            try
+            {
+                var comments = await _repo.Get();
+                return Ok(comments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Error en la solicitud");
+            }
+        }
+
+        
     }
 }

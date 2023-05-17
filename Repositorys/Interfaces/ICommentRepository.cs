@@ -11,8 +11,8 @@ namespace atteducation.api.Repositorys.Interfaces
     public interface ICommentRepository
     {
         //All comments from an user 
-        Task<Coment> Get(int userid);
-        Task<IActionResult> Create(CommentDto comment);
-        Task<IActionResult> Delete(int commentId);
+        Task<List<Coment>> Get();
+        Task Create(CommentDto comment);
+        Task Delete(int commentId);
     }
 }
