@@ -13,7 +13,6 @@ namespace atteducation.api.Repositorys
         {
             _context = context;
         }
-
         public async Task<List<User>> GetUser()
         {
             var user = await _context.Users.ToListAsync();
