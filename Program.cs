@@ -85,4 +85,6 @@ void LoadRepositorys(IServiceCollection service)
     service.AddScoped<IUserRepository, UserRepository>();
     service.AddScoped<IRolRepository, RolRepository>();
     service.AddScoped<IThemeRepository, ThemeRepository>();
+    service.AddScoped<ICommentRepository, ComentRepository>();
+    service.AddScoped<IContentRepository, ContentRepository>();
 }

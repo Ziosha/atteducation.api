@@ -36,5 +36,16 @@ namespace atteducation.api.Repositorys
             return theme;
         }
         
+        public async Task<List<Theme>> getTheme()
+        {
+            var Content = await _context.Themes.ToListAsync();
+            return Content;
+        }
+
+        public async Task<Theme> getThemeById(int contetnId)
+        {
+            var Content = await _context.Themes.FirstOrDefaultAsync(x => x.Id == contetnId);
+            return Content;
+        }
     }
 }
